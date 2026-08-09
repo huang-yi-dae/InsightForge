@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Layers, PenLine, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/zhizhi/app-shell";
-import { Button } from "@/components/ui/button";
 import { useZhizhi } from "@/lib/zhizhi/store";
 
 function DashboardInner() {
@@ -62,11 +61,13 @@ function DashboardInner() {
       <div className="mt-8">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="zz-serif text-lg font-semibold text-foreground">{t("dashboard.recommend")}</h2>
-          <Button asChild variant="ghost" size="sm" className="text-primary">
-            <Link href="/gaps" data-el="dashboard-open-gaps">
-              {t("dashboard.openGap")} <ArrowRight className="ml-1 h-3.5 w-3.5" />
-            </Link>
-          </Button>
+          <Link
+            href="/gaps"
+            data-el="dashboard-open-gaps"
+            className="inline-flex items-center gap-1 rounded-md px-2 py-1 text-sm font-medium text-primary hover:bg-primary/8"
+          >
+            {t("dashboard.openGap")} <ArrowRight className="ml-1 h-3.5 w-3.5" />
+          </Link>
         </div>
 
         <div className="space-y-3">
