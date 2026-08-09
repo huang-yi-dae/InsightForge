@@ -14,10 +14,12 @@ import {
   type Writing,
 } from "./types";
 import { SEED_CLUSTERS, SEED_DRAFTS, SEED_FRAGMENTS, SEED_GAPS, SEED_WRITINGS } from "./sample-library";
+import { fetchKbState, saveKbState, type KbState } from "@/lib/api/kb";
 
 const STORAGE_KEY = "zhizhi-state-v1";
 
 interface PersistShape {
+  clusters?: Cluster[];
   drafts: Draft[];
   writings: Writing[];
   gaps: Gap[];
@@ -85,23 +87,60 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
     ...DEFAULT_GUARDRAILS,
     ...loadPersist()?.guardrails,
   }));
-  const [ready] = useState<boolean>(() => typeof window !== "undefined");
-  const clusters = SEED_CLUSTERS;
+  const [clusters, setClusters] = useState<Cluster[]>(() => {
+    const p = loadPersist();
+    return p?.clusters?.length ? p.clusters : SEED_CLUSTERS;
+  });
+  const [ready, setReady] = useState<boolean>(() => typeof window !== "undefined");
   const hydrated = useRef(false);
+  // 持久化后端：加载完成前为 null；DB 可用 → "db"，否则 → "local"。
+  const backend = useRef<"db" | "local" | null>(null);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // 挂载后探测后端：有数据库则用共享库覆盖本地状态，否则维持 localStorage。
   useEffect(() => {
-    hydrated.current = true;
+    let cancelled = false;
+    (async () => {
+      const result = await fetchKbState();
+      if (cancelled) return;
+      if (result.enabled && result.state) {
+        const s = result.state;
+        setClusters(s.clusters);
+        setFragments(s.fragments);
+        setGaps(s.gaps);
+        setDrafts(s.drafts);
+        setWritings(s.writings);
+        setGuardrailsState({ ...DEFAULT_GUARDRAILS, ...s.guardrails });
+        backend.current = "db";
+      } else {
+        backend.current = "local";
+      }
+      hydrated.current = true;
+      setReady(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  // 持久化：DB 模式防抖 PUT，本地模式写 localStorage。
   useEffect(() => {
-    if (!hydrated.current) return;
-    const payload: PersistShape = { drafts, writings, gaps, fragments, guardrails };
-    try {
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    } catch {
-      /* ignore quota */
+    if (!hydrated.current || !backend.current) return;
+    const snapshot: KbState = { clusters, fragments, gaps, drafts, writings, guardrails };
+    if (backend.current === "db") {
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      saveTimer.current = setTimeout(() => {
+        void saveKbState(snapshot);
+      }, 600);
+    } else {
+      const payload: PersistShape = { clusters, drafts, writings, gaps, fragments, guardrails };
+      try {
+        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      } catch {
+        /* ignore quota */
+      }
     }
-  }, [drafts, writings, gaps, fragments, guardrails]);
+  }, [clusters, drafts, writings, gaps, fragments, guardrails]);
 
   const getGap = useCallback((id: string) => gaps.find((g) => g.id === id), [gaps]);
   const getDraft = useCallback((id: string) => drafts.find((d) => d.id === id), [drafts]);
