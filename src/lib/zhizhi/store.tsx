@@ -65,42 +65,43 @@ function loadPersist(): PersistShape | null {
 }
 
 export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
-  // 懒初始化：仅执行一次。在浏览器端直接从 localStorage 读取，
-  // 避免在 effect 里 setState 造成级联渲染，也避免在渲染期访问 ref。
-  const [fragments, setFragments] = useState<Fragment[]>(() => {
-    const p = loadPersist();
-    return p?.fragments?.length ? p.fragments : SEED_FRAGMENTS;
-  });
-  const [gaps, setGaps] = useState<Gap[]>(() => {
-    const p = loadPersist();
-    return p?.gaps?.length ? p.gaps : SEED_GAPS;
-  });
-  const [drafts, setDrafts] = useState<Draft[]>(() => {
-    const p = loadPersist();
-    return p?.drafts?.length ? p.drafts : SEED_DRAFTS;
-  });
-  const [writings, setWritings] = useState<Writing[]>(() => {
-    const p = loadPersist();
-    return p?.writings?.length ? p.writings : SEED_WRITINGS;
-  });
-  const [guardrails, setGuardrailsState] = useState<Guardrails>(() => ({
-    ...DEFAULT_GUARDRAILS,
-    ...loadPersist()?.guardrails,
-  }));
-  const [clusters, setClusters] = useState<Cluster[]>(() => {
-    const p = loadPersist();
-    return p?.clusters?.length ? p.clusters : SEED_CLUSTERS;
-  });
-  const [ready, setReady] = useState<boolean>(() => typeof window !== "undefined");
+  // 关键：SSR 与客户端首帧必须一致，否则 hydration 不匹配会导致事件绑定丢失
+  // （页面显示正常但点不动）。因此初始一律用 seed 数据、ready=false，
+  // localStorage / DB 的读取全部放到只在客户端执行的 useEffect 里。
+  const [fragments, setFragments] = useState<Fragment[]>(SEED_FRAGMENTS);
+  const [gaps, setGaps] = useState<Gap[]>(SEED_GAPS);
+  const [drafts, setDrafts] = useState<Draft[]>(SEED_DRAFTS);
+  const [writings, setWritings] = useState<Writing[]>(SEED_WRITINGS);
+  const [guardrails, setGuardrailsState] = useState<Guardrails>(DEFAULT_GUARDRAILS);
+  const [clusters, setClusters] = useState<Cluster[]>(SEED_CLUSTERS);
+  const [ready, setReady] = useState<boolean>(false);
   const hydrated = useRef(false);
   // 持久化后端：加载完成前为 null；DB 可用 → "db"，否则 → "local"。
   const backend = useRef<"db" | "local" | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 挂载后探测后端：有数据库则用共享库覆盖本地状态，否则维持 localStorage。
+  // 仅客户端：先用 localStorage 立即水合（保证离线/无 DB 时秒开），
+  // 再异步探测 DB；DB 可用则以共享库覆盖。任一分支都在最后置 ready=true。
   useEffect(() => {
     let cancelled = false;
+
     (async () => {
+      // 让 setState 不再"同步发生在 effect 体内"，规避级联渲染告警。
+      await Promise.resolve();
+      if (cancelled) return;
+
+      // 1) 本地缓存先行水合
+      const local = loadPersist();
+      if (local) {
+        if (local.clusters?.length) setClusters(local.clusters);
+        if (local.fragments?.length) setFragments(local.fragments);
+        if (local.gaps?.length) setGaps(local.gaps);
+        if (local.drafts?.length) setDrafts(local.drafts);
+        if (local.writings?.length) setWritings(local.writings);
+        if (local.guardrails) setGuardrailsState({ ...DEFAULT_GUARDRAILS, ...local.guardrails });
+      }
+
+      // 2) 探测后端
       const result = await fetchKbState();
       if (cancelled) return;
       if (result.enabled && result.state) {
@@ -118,6 +119,7 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
       hydrated.current = true;
       setReady(true);
     })();
+
     return () => {
       cancelled = true;
     };
