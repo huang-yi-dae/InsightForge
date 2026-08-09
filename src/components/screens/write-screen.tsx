@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ArrowLeft, Check, Send } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { AppShell } from "@/components/zhizhi/app-shell";
 import { AIQuotaMeter } from "@/components/zhizhi/ai-quota-meter";
 import { SkeletonPanel } from "@/components/zhizhi/skeleton-panel";
 import { SourcePanel } from "@/components/zhizhi/source-panel";
@@ -28,7 +27,7 @@ export function WriteScreen({ draftId }: { draftId: string }) {
     setDraftContent,
     setDraftSkeleton,
     citeFragment,
-    useExpand,
+    expandSkeleton,
     publishDraft,
   } = useZhizhi();
 
@@ -89,7 +88,7 @@ export function WriteScreen({ draftId }: { draftId: string }) {
       bullets = presetExpand(heading);
     }
     setExpanded((prev) => ({ ...prev, [heading]: [...(prev[heading] ?? []), ...bullets] }));
-    useExpand(draft.id, bullets.reduce((s, b) => s + countWords(b), 0));
+    expandSkeleton(draft.id, bullets.reduce((s, b) => s + countWords(b), 0));
   }
 
   function onInsert(f: Fragment) {

@@ -43,7 +43,7 @@ interface StoreValue {
   setDraftContent: (draftId: string, content: string) => void;
   setDraftSkeleton: (draftId: string, skeleton: Skeleton) => void;
   citeFragment: (draftId: string, fragmentId: string) => void;
-  useExpand: (draftId: string, addedAiWords: number) => void;
+  expandSkeleton: (draftId: string, addedAiWords: number) => void;
   publishDraft: (draftId: string) => Writing | undefined;
   setGuardrails: (g: Partial<Guardrails>) => void;
   todayInflow: number;
@@ -155,7 +155,7 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // 「请求展开」：AI 只给要点，字数计入 aiWords（护栏）
-  const useExpand = useCallback((draftId: string, addedAiWords: number) => {
+  const expandSkeleton = useCallback((draftId: string, addedAiWords: number) => {
     setDrafts((prev) =>
       prev.map((d) =>
         d.id === draftId
@@ -218,12 +218,12 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
       setDraftContent,
       setDraftSkeleton,
       citeFragment,
-      useExpand,
+      expandSkeleton,
       publishDraft,
       setGuardrails,
       todayInflow,
     }),
-    [ready, clusters, fragments, gaps, drafts, writings, guardrails, getGap, getDraft, getFragment, fragmentsForGap, ensureDraftForGap, setDraftContent, setDraftSkeleton, citeFragment, useExpand, publishDraft, setGuardrails, todayInflow],
+    [ready, clusters, fragments, gaps, drafts, writings, guardrails, getGap, getDraft, getFragment, fragmentsForGap, ensureDraftForGap, setDraftContent, setDraftSkeleton, citeFragment, expandSkeleton, publishDraft, setGuardrails, todayInflow],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;
