@@ -63,26 +63,21 @@ function loadPersist(): PersistShape | null {
 }
 
 export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
+  // 懒初始化：在浏览器端直接从 localStorage 读取，避免在 effect 里 setState 造成级联渲染。
+  const persisted = useRef<PersistShape | null>(loadPersist());
   const [ready, setReady] = useState(false);
-  const [fragments, setFragments] = useState<Fragment[]>(MOCK_FRAGMENTS);
-  const [gaps, setGaps] = useState<Gap[]>(MOCK_GAPS);
-  const [drafts, setDrafts] = useState<Draft[]>(MOCK_DRAFTS);
-  const [writings, setWritings] = useState<Writing[]>(MOCK_WRITINGS);
-  const [guardrails, setGuardrailsState] = useState<Guardrails>(DEFAULT_GUARDRAILS);
+  const [fragments, setFragments] = useState<Fragment[]>(persisted.current?.fragments?.length ? persisted.current.fragments : MOCK_FRAGMENTS);
+  const [gaps, setGaps] = useState<Gap[]>(persisted.current?.gaps?.length ? persisted.current.gaps : MOCK_GAPS);
+  const [drafts, setDrafts] = useState<Draft[]>(persisted.current?.drafts?.length ? persisted.current.drafts : MOCK_DRAFTS);
+  const [writings, setWritings] = useState<Writing[]>(persisted.current?.writings?.length ? persisted.current.writings : MOCK_WRITINGS);
+  const [guardrails, setGuardrailsState] = useState<Guardrails>({ ...DEFAULT_GUARDRAILS, ...persisted.current?.guardrails });
   const clusters = MOCK_CLUSTERS;
   const hydrated = useRef(false);
 
   useEffect(() => {
-    const p = loadPersist();
-    if (p) {
-      if (p.fragments?.length) setFragments(p.fragments);
-      if (p.gaps?.length) setGaps(p.gaps);
-      if (p.drafts?.length) setDrafts(p.drafts);
-      if (p.writings?.length) setWritings(p.writings);
-      if (p.guardrails) setGuardrailsState({ ...DEFAULT_GUARDRAILS, ...p.guardrails });
-    }
-    hydrated.current = true;
+    // 客户端挂载后再标记 ready，避免 SSR/CSR 内容不一致。
     setReady(true);
+    hydrated.current = true;
   }, []);
 
   useEffect(() => {
