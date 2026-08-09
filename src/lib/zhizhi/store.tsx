@@ -13,7 +13,7 @@ import {
   type Skeleton,
   type Writing,
 } from "./types";
-import { MOCK_CLUSTERS, MOCK_DRAFTS, MOCK_FRAGMENTS, MOCK_GAPS, MOCK_WRITINGS } from "./mock";
+import { SEED_CLUSTERS, SEED_DRAFTS, SEED_FRAGMENTS, SEED_GAPS, SEED_WRITINGS } from "./sample-library";
 
 const STORAGE_KEY = "zhizhi-state-v1";
 
@@ -67,26 +67,26 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
   // 避免在 effect 里 setState 造成级联渲染，也避免在渲染期访问 ref。
   const [fragments, setFragments] = useState<Fragment[]>(() => {
     const p = loadPersist();
-    return p?.fragments?.length ? p.fragments : MOCK_FRAGMENTS;
+    return p?.fragments?.length ? p.fragments : SEED_FRAGMENTS;
   });
   const [gaps, setGaps] = useState<Gap[]>(() => {
     const p = loadPersist();
-    return p?.gaps?.length ? p.gaps : MOCK_GAPS;
+    return p?.gaps?.length ? p.gaps : SEED_GAPS;
   });
   const [drafts, setDrafts] = useState<Draft[]>(() => {
     const p = loadPersist();
-    return p?.drafts?.length ? p.drafts : MOCK_DRAFTS;
+    return p?.drafts?.length ? p.drafts : SEED_DRAFTS;
   });
   const [writings, setWritings] = useState<Writing[]>(() => {
     const p = loadPersist();
-    return p?.writings?.length ? p.writings : MOCK_WRITINGS;
+    return p?.writings?.length ? p.writings : SEED_WRITINGS;
   });
   const [guardrails, setGuardrailsState] = useState<Guardrails>(() => ({
     ...DEFAULT_GUARDRAILS,
     ...loadPersist()?.guardrails,
   }));
   const [ready] = useState<boolean>(() => typeof window !== "undefined");
-  const clusters = MOCK_CLUSTERS;
+  const clusters = SEED_CLUSTERS;
   const hydrated = useRef(false);
 
   useEffect(() => {
