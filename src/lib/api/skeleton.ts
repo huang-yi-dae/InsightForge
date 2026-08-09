@@ -14,17 +14,23 @@ export interface ExpandRequest {
 
 // 反代写约束：后端只返回提纲/要点结构，绝不返回成段文字
 export async function generateSkeleton(body: SkeletonRequest): Promise<Skeleton> {
-  const res = await request<{ skeleton: Skeleton }>("/api/skeleton", {
+  const res = await request("/api/skeleton", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  return res.skeleton;
+  if (!res.ok) throw new Error("skeleton_failed");
+  const data = (await res.json()) as { skeleton: Skeleton };
+  return data.skeleton;
 }
 
 export async function requestExpand(body: ExpandRequest): Promise<string[]> {
-  const res = await request<{ bullets: string[] }>("/api/skeleton/expand", {
+  const res = await request("/api/skeleton/expand", {
     method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  return res.bullets;
+  if (!res.ok) throw new Error("expand_failed");
+  const data = (await res.json()) as { bullets: string[] };
+  return data.bullets;
 }
