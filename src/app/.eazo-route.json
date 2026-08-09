@@ -1,0 +1,8 @@
+{
+  "route": "",
+  "name": "今日总览",
+  "nav_type": "tab",
+  "order_index": 0,
+  "icon": "home",
+  "summary": "今日流入/待办空白/在写草稿 + 推荐先写"
+}

@@ -1,0 +1,8 @@
+{
+  "route": "library",
+  "name": "成文库",
+  "nav_type": "tab",
+  "order_index": 3,
+  "icon": "book-open",
+  "summary": "已发布成文 + 回流状态"
+}

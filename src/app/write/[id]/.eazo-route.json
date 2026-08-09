@@ -1,0 +1,10 @@
+{
+  "route": "write/[id]",
+  "name": "写作画布",
+  "nav_type": "stack",
+  "parent": "gaps",
+  "order_index": 2,
+  "icon": "pencil",
+  "summary": "三栏画布 + 人工/AI 字数占比护栏 + 素材插入 + 回流条",
+  "preview_route": "write/gap-tool-context"
+}

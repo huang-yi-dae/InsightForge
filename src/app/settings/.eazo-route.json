@@ -1,0 +1,8 @@
+{
+  "route": "settings",
+  "name": "设置",
+  "nav_type": "tab",
+  "order_index": 4,
+  "icon": "settings",
+  "summary": "反代写阈值"
+}

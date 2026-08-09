@@ -1,0 +1,8 @@
+{
+  "route": "gaps",
+  "name": "空白勘探",
+  "nav_type": "tab",
+  "order_index": 1,
+  "icon": "search",
+  "summary": "文学双联：碎片剪影网格 + 空白列表 + 详情"
+}
