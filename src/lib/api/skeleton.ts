@@ -1,4 +1,4 @@
-import { request } from "@/lib/api/request";
+import { appAIRequest } from "@/lib/api/app-ai-request";
 import type { Skeleton } from "@/lib/zhizhi/types";
 
 export interface SkeletonRequest {
@@ -14,7 +14,7 @@ export interface ExpandRequest {
 
 // 反代写约束：后端只返回提纲/要点结构，绝不返回成段文字
 export async function generateSkeleton(body: SkeletonRequest): Promise<Skeleton> {
-  const res = await request("/api/skeleton", {
+  const res = await appAIRequest("/api/skeleton", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -25,7 +25,7 @@ export async function generateSkeleton(body: SkeletonRequest): Promise<Skeleton>
 }
 
 export async function requestExpand(body: ExpandRequest): Promise<string[]> {
-  const res = await request("/api/skeleton/expand", {
+  const res = await appAIRequest("/api/skeleton/expand", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
