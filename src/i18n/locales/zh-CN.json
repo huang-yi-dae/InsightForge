@@ -10,7 +10,8 @@
     "cancel": "取消",
     "edit": "编辑",
     "delete": "删除",
-    "userId": "用户 ID"
+    "userId": "用户 ID",
+    "back": "返回"
   },
   "language": {
     "label": "语言",
@@ -34,36 +35,96 @@
       "backHome": "返回首页"
     }
   },
-  "starter": {
-    "badge": "Eazo 应用模板",
-    "title": "用 Eazo 构建你的下一个应用",
-    "subtitle": "你现在拥有干净的基础：认证、数据访问与平台能力已就绪，可直接开发产品功能。",
-    "steps": {
-      "readDocs": {
-        "title": "阅读文档",
-        "desc": "打开 AGENTS.md 与 README.md，了解模板架构与约定。",
-        "code": "AGENTS.md + README.md"
-      },
-      "replacePage": {
-        "title": "替换本页",
-        "desc": "将产品 UI 放到 src/components 下，并保持 page.tsx 为薄入口。",
-        "code": "src/app/page.tsx"
-      },
-      "firstFeature": {
-        "title": "开发第一个功能",
-        "desc": "在 src/app/api 添加接口，并通过 src/lib/api 中的类型化 helper 调用。",
-        "code": "src/app/api/*"
-      },
-      "translations": {
-        "title": "补充翻译",
-        "desc": "在 src/i18n/locales 编辑中英文文案；layout 已接入 LanguageSwitcher 与 I18nProvider。",
-        "code": "src/i18n/locales/"
-      }
-    },
-    "nextCommand": {
-      "title": "下一步命令",
-      "desc": "启动开发服务器，实时迭代你的产品。",
-      "command": "bun dev"
-    }
+  "brand": {
+    "name": "InsightForge",
+    "cn": "织知",
+    "tagline": "AI 只给骨架，血肉由你亲手补。"
+  },
+  "nav": {
+    "dashboard": "今日",
+    "gaps": "空白勘探",
+    "write": "写作",
+    "library": "成文库",
+    "settings": "设置"
+  },
+  "quota": {
+    "label": "AI 占比",
+    "over": "AI 占比超限",
+    "ok": "占比正常"
+  },
+  "dashboard": {
+    "title": "今天",
+    "subtitle": "收集不等于成长。今天，挑一个空白写成文。",
+    "inflow": "今日流入",
+    "pendingGaps": "待办空白",
+    "drafting": "在写草稿",
+    "fragments": "条碎片",
+    "recommend": "推荐你先写",
+    "relatedClusters": "相关簇",
+    "supporting": "支撑碎片",
+    "openGap": "去勘探空白",
+    "resume": "继续写",
+    "inflowWarn": "今日流入接近上限——先去写一篇再继续收集。"
+  },
+  "gaps": {
+    "title": "空白勘探",
+    "subtitle": "相邻概念都齐，但你还没写过的『该写点』。",
+    "recon": "重新勘探",
+    "leftTitle": "碎片场",
+    "listTitle": "待写的空白",
+    "detailTitle": "详情",
+    "confidence": "置信度",
+    "supporting": "支撑碎片",
+    "adjacentConcepts": "相邻概念",
+    "fragmentPreview": "碎片预览",
+    "generateSkeleton": "生成骨架 →",
+    "resume": "继续写 →",
+    "empty": "还没有空白——先去喂点碎片吧。",
+    "pickHint": "选一个空白，查看它的支撑碎片。"
+  },
+  "write": {
+    "back": "返回",
+    "draft": "草稿",
+    "skeletonTitle": "骨架",
+    "skeletonBadge": "这是提示，不是你",
+    "generating": "正在生成骨架…",
+    "generate": "生成骨架",
+    "requestExpand": "请求展开",
+    "expandLeft": "还剩 {{left}}/{{total}} 次",
+    "expandNote": "展开只给要点提示，绝不给成段文字，也不能整段插入画布。",
+    "canvasTitle": "你的画布",
+    "canvasPlaceholder": "在这里写。AI 不进来。这里的每个字都是你的。",
+    "yourWords": "你的字数",
+    "aiWords": "AI 字数",
+    "sourceTitle": "相关碎片",
+    "insertQuote": "插入引用",
+    "inserted": "已插入",
+    "reflowBar": "回流条",
+    "saveDraft": "保存草稿",
+    "saved": "已保存",
+    "publish": "发布并回流 →",
+    "published": "已发布并回流",
+    "overWarn": "AI 占比 {{ratio}}% 已超过你设定的 {{limit}}%——血肉应该是你的。",
+    "expandDisabled": "本篇的展开次数已用完。",
+    "genFailed": "骨架服务繁忙——已载入一份预置提纲。"
+  },
+  "library": {
+    "title": "成文库",
+    "subtitle": "发布的成文会回流进你的知识库。",
+    "reflowed": "已回流",
+    "empty": "还没有已发布的成文。写完一篇草稿就会出现在这里。",
+    "humanShare": "人工 {{ratio}}%",
+    "words": "{{count}} 字"
+  },
+  "settings": {
+    "title": "设置",
+    "subtitle": "反代写护栏。",
+    "aiRatio": "AI 字数占比上限",
+    "aiRatioDesc": "当一篇里 AI 字数超过该占比时告警。",
+    "expandLimit": "每篇请求展开次数",
+    "expandLimitDesc": "每篇最多能请求几次骨架展开。",
+    "dailyInflow": "每日碎片流入上限",
+    "dailyInflowDesc": "防止『收集病』复发。",
+    "saved": "设置已保存"
   }
 }
