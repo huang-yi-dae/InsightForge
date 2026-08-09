@@ -22,13 +22,18 @@ export interface KbLoadResult {
 }
 
 // 读取共享知识库；enabled=false 表示未配置数据库，应回退到 localStorage。
-export async function fetchKbState(): Promise<KbLoadResult> {
+// 带超时保护：数据库慢/不可达时不卡住 UI，直接回退本地。
+export async function fetchKbState(timeoutMs = 6000): Promise<KbLoadResult> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    const res = await fetch("/api/kb", { cache: "no-store" });
+    const res = await fetch("/api/kb", { cache: "no-store", signal: ctrl.signal });
     if (!res.ok) return { enabled: false };
     return (await res.json()) as KbLoadResult;
   } catch {
     return { enabled: false };
+  } finally {
+    clearTimeout(timer);
   }
 }
 
