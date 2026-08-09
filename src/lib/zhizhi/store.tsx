@@ -3,13 +3,16 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import {
   DEFAULT_GUARDRAILS,
+  DEFAULT_IDENTITY,
   aiRatio,
   countWords,
   type Cluster,
   type Draft,
   type Fragment,
+  type FragmentSource,
   type Gap,
   type Guardrails,
+  type Identity,
   type Skeleton,
   type Writing,
 } from "./types";
@@ -25,6 +28,7 @@ interface PersistShape {
   gaps: Gap[];
   fragments: Fragment[];
   guardrails: Guardrails;
+  identity?: Identity;
 }
 
 interface StoreValue {
@@ -35,6 +39,7 @@ interface StoreValue {
   drafts: Draft[];
   writings: Writing[];
   guardrails: Guardrails;
+  identity: Identity;
   // 查询
   getGap: (id: string) => Gap | undefined;
   getDraft: (id: string) => Draft | undefined;
@@ -48,6 +53,9 @@ interface StoreValue {
   expandSkeleton: (draftId: string, addedAiWords: number) => void;
   publishDraft: (draftId: string) => Writing | undefined;
   setGuardrails: (g: Partial<Guardrails>) => void;
+  setIdentity: (id: Partial<Identity>) => void;
+  // 快速采集：随手存一条碎片，自动归到最匹配的簇
+  captureFragment: (content: string, source?: FragmentSource) => void;
   todayInflow: number;
 }
 
@@ -73,6 +81,7 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
   const [drafts, setDrafts] = useState<Draft[]>(SEED_DRAFTS);
   const [writings, setWritings] = useState<Writing[]>(SEED_WRITINGS);
   const [guardrails, setGuardrailsState] = useState<Guardrails>(DEFAULT_GUARDRAILS);
+  const [identity, setIdentityState] = useState<Identity>(DEFAULT_IDENTITY);
   const [clusters, setClusters] = useState<Cluster[]>(SEED_CLUSTERS);
   const [ready, setReady] = useState<boolean>(false);
   const hydrated = useRef(false);
@@ -99,6 +108,7 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
         if (local.drafts?.length) setDrafts(local.drafts);
         if (local.writings?.length) setWritings(local.writings);
         if (local.guardrails) setGuardrailsState({ ...DEFAULT_GUARDRAILS, ...local.guardrails });
+        if (local.identity) setIdentityState({ ...DEFAULT_IDENTITY, ...local.identity });
       }
 
       // 2) 探测后端
@@ -112,6 +122,7 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
         setDrafts(s.drafts);
         setWritings(s.writings);
         setGuardrailsState({ ...DEFAULT_GUARDRAILS, ...s.guardrails });
+        if (s.identity) setIdentityState({ ...DEFAULT_IDENTITY, ...s.identity });
         backend.current = "db";
       } else {
         backend.current = "local";
@@ -128,21 +139,21 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
   // 持久化：DB 模式防抖 PUT，本地模式写 localStorage。
   useEffect(() => {
     if (!hydrated.current || !backend.current) return;
-    const snapshot: KbState = { clusters, fragments, gaps, drafts, writings, guardrails };
+    const snapshot: KbState = { clusters, fragments, gaps, drafts, writings, guardrails, identity };
     if (backend.current === "db") {
       if (saveTimer.current) clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => {
         void saveKbState(snapshot);
       }, 600);
     } else {
-      const payload: PersistShape = { clusters, drafts, writings, gaps, fragments, guardrails };
+      const payload: PersistShape = { clusters, drafts, writings, gaps, fragments, guardrails, identity };
       try {
         window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
       } catch {
         /* ignore quota */
       }
     }
-  }, [clusters, drafts, writings, gaps, fragments, guardrails]);
+  }, [clusters, drafts, writings, gaps, fragments, guardrails, identity]);
 
   const getGap = useCallback((id: string) => gaps.find((g) => g.id === id), [gaps]);
   const getDraft = useCallback((id: string) => drafts.find((d) => d.id === id), [drafts]);
@@ -250,6 +261,43 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
     setGuardrailsState((prev) => ({ ...prev, ...g }));
   }, []);
 
+  const setIdentity = useCallback((id: Partial<Identity>) => {
+    setIdentityState((prev) => ({ ...prev, ...id }));
+  }, []);
+
+  // 快速采集：把一条随手记的碎片归到「标题与内容重合度最高」的簇；
+  // 无匹配则落到第一个簇。同时把碎片挂到该簇，喂养后续空白勘探。
+  const captureFragment = useCallback(
+    (content: string, source: FragmentSource = "raw") => {
+      const text = content.trim();
+      if (!text) return;
+      const scored = clusters.map((c) => {
+        const label = c.label;
+        // 简单重合度：簇标签里出现在正文中的字符片段越多，得分越高
+        const tokens = label.split(/[\s/·、,，]+/).filter((x) => x.length >= 2);
+        const score = tokens.reduce((s, tk) => (text.includes(tk) ? s + tk.length : s), 0);
+        return { cluster: c, score };
+      });
+      scored.sort((a, b) => b.score - a.score);
+      const target = scored[0]?.score ? scored[0].cluster : clusters[0];
+      if (!target) return;
+      const id = `f-${Date.now()}`;
+      const frag: Fragment = {
+        id,
+        clusterId: target.id,
+        source,
+        content: text,
+        createdAt: new Date().toISOString(),
+        reflowed: false,
+      };
+      setFragments((prev) => [frag, ...prev]);
+      setClusters((prev) =>
+        prev.map((c) => (c.id === target.id ? { ...c, fragmentIds: [id, ...c.fragmentIds] } : c)),
+      );
+    },
+    [clusters],
+  );
+
   const todayInflow = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     return fragments.filter((f) => f.createdAt.slice(0, 10) === today).length;
@@ -264,6 +312,7 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
       drafts,
       writings,
       guardrails,
+      identity,
       getGap,
       getDraft,
       getFragment,
@@ -275,9 +324,11 @@ export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
       expandSkeleton,
       publishDraft,
       setGuardrails,
+      setIdentity,
+      captureFragment,
       todayInflow,
     }),
-    [ready, clusters, fragments, gaps, drafts, writings, guardrails, getGap, getDraft, getFragment, fragmentsForGap, ensureDraftForGap, setDraftContent, setDraftSkeleton, citeFragment, expandSkeleton, publishDraft, setGuardrails, todayInflow],
+    [ready, clusters, fragments, gaps, drafts, writings, guardrails, identity, getGap, getDraft, getFragment, fragmentsForGap, ensureDraftForGap, setDraftContent, setDraftSkeleton, citeFragment, expandSkeleton, publishDraft, setGuardrails, setIdentity, captureFragment, todayInflow],
   );
 
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>;

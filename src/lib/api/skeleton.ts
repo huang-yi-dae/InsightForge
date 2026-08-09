@@ -3,6 +3,7 @@ import type { Skeleton } from "@/lib/zhizhi/types";
 export interface SkeletonRequest {
   gapTitle: string;
   fragments: string[]; // 支撑碎片内容
+  identity?: string; // 创作者身份上下文（观点/受众/语气/话题），可空
 }
 
 export interface ExpandRequest {

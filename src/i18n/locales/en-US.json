@@ -64,7 +64,22 @@
     "supporting": "supporting fragments",
     "openGap": "Explore gaps",
     "resume": "Resume draft",
+    "why": "Why write this first",
     "inflowWarn": "Daily inflow near limit — write one before collecting more."
+  },
+  "reason": {
+    "fresh": "{{fresh}} related fragments added recently — strike while hot",
+    "density": "{{count}} supporting fragments — richest material",
+    "confidence": "Adjacent concepts ready, {{pct}}% ready to write",
+    "default": "{{count}} fragments to lean on — fill this gap first"
+  },
+  "inbox": {
+    "title": "Quick capture",
+    "placeholder": "Jot an idea or highlight — auto-clustered to feed gap discovery… (⌘/Ctrl+Enter)",
+    "add": "Save",
+    "saved": "Saved to your knowledge base",
+    "hint": "Saved fragments count toward today's inflow and go to the best-matching cluster.",
+    "overLimit": "Daily inflow reached — go write one instead of hoarding."
   },
   "gaps": {
     "title": "Gap discovery",
@@ -115,11 +130,26 @@
     "reflowed": "Reflowed",
     "empty": "No published pieces yet. Finish a draft to see it here.",
     "humanShare": "human {{ratio}}%",
-    "words": "{{count}} words"
+    "words": "{{count}} words",
+    "copyMd": "Copy Markdown",
+    "downloadMd": "Download .md",
+    "copied": "Markdown copied to clipboard",
+    "copyFailed": "Copy failed — please select manually",
+    "downloaded": "Downloading .md"
   },
   "settings": {
     "title": "Settings",
     "subtitle": "Anti-ghostwriting guardrails.",
+    "identityTitle": "Creator identity",
+    "identityDesc": "Record your point of view, audience, voice and topics. Injected when generating skeletons so outlines sound like you — but AI still only gives outlines, never ghostwrites.",
+    "idPov": "Your core point of view",
+    "idPovPh": "e.g. Against mindless collecting; use output to force better input",
+    "idAudience": "Who you write for",
+    "idAudiencePh": "e.g. Knowledge workers escaping the collecting habit",
+    "idVoice": "Voice / style",
+    "idVoicePh": "e.g. Restrained, first person, few adjectives, lots of examples",
+    "idTopics": "Long-term topics",
+    "idTopicsPh": "e.g. Knowledge management, writing, AI collaboration",
     "aiRatio": "AI word-share limit",
     "aiRatioDesc": "Warn when AI words exceed this share of a piece.",
     "expandLimit": "Expansion uses per piece",

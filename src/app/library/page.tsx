@@ -1,10 +1,12 @@
 "use client";
 
-import { BookOpen, CheckCircle2 } from "lucide-react";
+import { BookOpen, CheckCircle2, Copy, Download } from "lucide-react";
+import { toast } from "sonner";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/zhizhi/app-shell";
 import { useZhizhi } from "@/lib/zhizhi/store";
 import { aiRatio } from "@/lib/zhizhi/types";
+import { copyToClipboard, downloadMarkdown, writingToMarkdown } from "@/lib/zhizhi/export";
 
 function LibraryInner() {
   const { t } = useTranslation();
@@ -45,6 +47,28 @@ function LibraryInner() {
                   </span>
                   <span className="rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary">
                     {t("library.humanShare", { ratio: humanShare })}
+                  </span>
+                  <span className="ml-auto flex items-center gap-1.5">
+                    <button
+                      data-el="library-copy-md"
+                      onClick={async () => {
+                        const ok = await copyToClipboard(writingToMarkdown(w));
+                        toast[ok ? "success" : "error"](t(ok ? "library.copied" : "library.copyFailed"));
+                      }}
+                      className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 font-medium text-foreground/70 hover:text-foreground"
+                    >
+                      <Copy className="h-3.5 w-3.5" /> {t("library.copyMd")}
+                    </button>
+                    <button
+                      data-el="library-download-md"
+                      onClick={() => {
+                        downloadMarkdown(w.title, writingToMarkdown(w));
+                        toast.success(t("library.downloaded"));
+                      }}
+                      className="inline-flex items-center gap-1 rounded-md border border-border px-2 py-1 font-medium text-foreground/70 hover:text-foreground"
+                    >
+                      <Download className="h-3.5 w-3.5" /> {t("library.downloadMd")}
+                    </button>
                   </span>
                 </div>
               </article>

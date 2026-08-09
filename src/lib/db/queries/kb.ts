@@ -6,9 +6,10 @@ import type {
   Fragment,
   Gap,
   Guardrails,
+  Identity,
   Writing,
 } from "@/lib/zhizhi/types";
-import { DEFAULT_GUARDRAILS } from "@/lib/zhizhi/types";
+import { DEFAULT_GUARDRAILS, DEFAULT_IDENTITY } from "@/lib/zhizhi/types";
 
 export interface KbState {
   clusters: Cluster[];
@@ -17,6 +18,7 @@ export interface KbState {
   drafts: Draft[];
   writings: Writing[];
   guardrails: Guardrails;
+  identity?: Identity;
 }
 
 function requireDb() {
@@ -87,6 +89,14 @@ export async function loadState(): Promise<KbState> {
           dailyInflowLimit: s.dailyInflowLimit,
         }
       : { ...DEFAULT_GUARDRAILS },
+    identity: s
+      ? {
+          pointOfView: s.identityPov,
+          audience: s.identityAudience,
+          voice: s.identityVoice,
+          topics: s.identityTopics,
+        }
+      : { ...DEFAULT_IDENTITY },
   };
 }
 
@@ -164,6 +174,7 @@ export async function saveState(state: KbState): Promise<void> {
       );
     }
 
+    const identity = state.identity ?? DEFAULT_IDENTITY;
     await tx
       .insert(schema.settings)
       .values({
@@ -171,6 +182,10 @@ export async function saveState(state: KbState): Promise<void> {
         aiRatioLimit: state.guardrails.aiRatioLimit,
         expandLimit: state.guardrails.expandLimit,
         dailyInflowLimit: state.guardrails.dailyInflowLimit,
+        identityPov: identity.pointOfView,
+        identityAudience: identity.audience,
+        identityVoice: identity.voice,
+        identityTopics: identity.topics,
       })
       .onConflictDoUpdate({
         target: schema.settings.id,
@@ -178,6 +193,10 @@ export async function saveState(state: KbState): Promise<void> {
           aiRatioLimit: state.guardrails.aiRatioLimit,
           expandLimit: state.guardrails.expandLimit,
           dailyInflowLimit: state.guardrails.dailyInflowLimit,
+          identityPov: identity.pointOfView,
+          identityAudience: identity.audience,
+          identityVoice: identity.voice,
+          identityTopics: identity.topics,
         },
       });
   });

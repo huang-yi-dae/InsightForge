@@ -5,12 +5,14 @@ import { useRouter } from "next/navigation";
 import { ArrowRight, Layers, PenLine, Sparkles } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { AppShell } from "@/components/zhizhi/app-shell";
+import { InboxCapture } from "@/components/zhizhi/inbox-capture";
 import { useZhizhi } from "@/lib/zhizhi/store";
+import { gapReason } from "@/lib/zhizhi/types";
 
 function DashboardInner() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { gaps, todayInflow, guardrails, ensureDraftForGap, clusters } = useZhizhi();
+  const { gaps, todayInflow, guardrails, ensureDraftForGap, clusters, fragments } = useZhizhi();
 
   const pendingGaps = gaps.filter((g) => g.status === "todo");
   const draftingGaps = gaps.filter((g) => g.status === "drafting");
@@ -58,6 +60,8 @@ function DashboardInner() {
         ))}
       </div>
 
+      <InboxCapture />
+
       <div className="mt-8">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="zz-serif text-lg font-semibold text-foreground">{t("dashboard.recommend")}</h2>
@@ -75,6 +79,7 @@ function DashboardInner() {
             const clusterLabels = gap.clusterIds
               .map((cid) => clusters.find((c) => c.id === cid)?.label)
               .filter(Boolean);
+            const reason = gapReason(gap, fragments);
             return (
               <button
                 key={gap.id}
@@ -94,6 +99,9 @@ function DashboardInner() {
                     <span className="rounded-full bg-accent/12 px-2 py-0.5 font-medium text-accent">
                       {t("gaps.confidence")} {gap.confidence.toFixed(2)}
                     </span>
+                  </div>
+                  <div data-el="gap-reason" className="mt-1.5 text-xs text-primary/80">
+                    {t("dashboard.why")}：{t(`reason.${reason.key}`, reason.params)}
                   </div>
                 </div>
                 <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-1 group-hover:text-accent" />

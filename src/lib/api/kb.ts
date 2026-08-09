@@ -4,6 +4,7 @@ import type {
   Fragment,
   Gap,
   Guardrails,
+  Identity,
   Writing,
 } from "@/lib/zhizhi/types";
 
@@ -14,6 +15,7 @@ export interface KbState {
   drafts: Draft[];
   writings: Writing[];
   guardrails: Guardrails;
+  identity?: Identity;
 }
 
 export interface KbLoadResult {

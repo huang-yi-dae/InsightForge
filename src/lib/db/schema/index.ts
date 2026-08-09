@@ -62,10 +62,15 @@ export const writings = pgTable("writings", {
   reflowed: boolean("reflowed").notNull().default(true),
 });
 
-// 单行设置表（反代写护栏）。id 固定为 "default"。
+// 单行设置表（反代写护栏 + 创作者身份档案）。id 固定为 "default"。
 export const settings = pgTable("settings", {
   id: text("id").primaryKey().default("default"),
   aiRatioLimit: real("ai_ratio_limit").notNull().default(0.3),
   expandLimit: integer("expand_limit").notNull().default(3),
   dailyInflowLimit: integer("daily_inflow_limit").notNull().default(20),
+  // 身份档案（Identity）
+  identityPov: text("identity_pov").notNull().default(""),
+  identityAudience: text("identity_audience").notNull().default(""),
+  identityVoice: text("identity_voice").notNull().default(""),
+  identityTopics: text("identity_topics").notNull().default(""),
 });

@@ -64,7 +64,22 @@
     "supporting": "支撑碎片",
     "openGap": "去勘探空白",
     "resume": "继续写",
+    "why": "为什么先写这个",
     "inflowWarn": "今日流入接近上限——先去写一篇再继续收集。"
+  },
+  "reason": {
+    "fresh": "最近新增了 {{fresh}} 条相关碎片，趁热写",
+    "density": "已有 {{count}} 条支撑碎片，素材最足",
+    "confidence": "相邻概念齐备，成文把握 {{pct}}%",
+    "default": "有 {{count}} 条碎片可依托，先补这块空白"
+  },
+  "inbox": {
+    "title": "快速采集",
+    "placeholder": "随手记一条想法/摘录，自动归簇喂养空白勘探…（⌘/Ctrl+Enter 提交）",
+    "add": "存入",
+    "saved": "已存入知识库",
+    "hint": "存下的碎片会计入今日流入，并归到最匹配的簇。",
+    "overLimit": "今日流入已达上限——先去写一篇，别再囤了。"
   },
   "gaps": {
     "title": "空白勘探",
@@ -115,11 +130,26 @@
     "reflowed": "已回流",
     "empty": "还没有已发布的成文。写完一篇草稿就会出现在这里。",
     "humanShare": "人工 {{ratio}}%",
-    "words": "{{count}} 字"
+    "words": "{{count}} 字",
+    "copyMd": "复制 Markdown",
+    "downloadMd": "下载 .md",
+    "copied": "已复制 Markdown 到剪贴板",
+    "copyFailed": "复制失败，请手动选择",
+    "downloaded": "已开始下载 .md"
   },
   "settings": {
     "title": "设置",
     "subtitle": "反代写护栏。",
+    "identityTitle": "创作者身份档案",
+    "identityDesc": "记录你的观点/受众/语气/话题。生成骨架时注入，让提纲更像你——但 AI 仍只给提纲，绝不代写。",
+    "idPov": "你的核心观点/立场",
+    "idPovPh": "例如：反对无脑收集，主张用产出倒逼输入",
+    "idAudience": "你写给谁看",
+    "idAudiencePh": "例如：想摆脱收集病的知识工作者",
+    "idVoice": "语气 / 风格",
+    "idVoicePh": "例如：克制、第一人称、少用形容词、多举例",
+    "idTopics": "长期深耕话题",
+    "idTopicsPh": "例如：知识管理、写作、AI 协作",
     "aiRatio": "AI 字数占比上限",
     "aiRatioDesc": "当一篇里 AI 字数超过该占比时告警。",
     "expandLimit": "每篇请求展开次数",

@@ -27,14 +27,42 @@ function Row({
 
 function SettingsInner() {
   const { t } = useTranslation();
-  const { guardrails, setGuardrails } = useZhizhi();
+  const { guardrails, setGuardrails, identity, setIdentity } = useZhizhi();
+
+  const identityFields = [
+    { key: "pointOfView" as const, label: t("settings.idPov"), ph: t("settings.idPovPh") },
+    { key: "audience" as const, label: t("settings.idAudience"), ph: t("settings.idAudiencePh") },
+    { key: "voice" as const, label: t("settings.idVoice"), ph: t("settings.idVoicePh") },
+    { key: "topics" as const, label: t("settings.idTopics"), ph: t("settings.idTopicsPh") },
+  ];
 
   return (
     <div data-el="settings" className="mx-auto w-full max-w-2xl px-4 py-6 md:px-8 md:py-10">
       <h1 className="zz-serif text-2xl font-bold text-foreground md:text-3xl">{t("settings.title")}</h1>
       <p className="mt-2 text-sm text-muted-foreground">{t("settings.subtitle")}</p>
 
-      <div className="mt-6 space-y-3">
+      {/* 创作者身份档案 */}
+      <div className="mt-6 rounded-xl border border-border bg-card p-4 shadow-sm">
+        <div className="font-medium text-foreground">{t("settings.identityTitle")}</div>
+        <div className="mt-0.5 text-xs text-muted-foreground">{t("settings.identityDesc")}</div>
+        <div className="mt-4 space-y-3">
+          {identityFields.map((f) => (
+            <label key={f.key} className="block">
+              <span className="text-xs font-medium text-foreground/70">{f.label}</span>
+              <textarea
+                data-el={`settings-identity-${f.key}`}
+                value={identity[f.key]}
+                placeholder={f.ph}
+                onChange={(e) => setIdentity({ [f.key]: e.target.value })}
+                rows={2}
+                className="mt-1 w-full resize-none rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-accent/60"
+              />
+            </label>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-3 space-y-3">
         <Row label={t("settings.aiRatio")} desc={t("settings.aiRatioDesc")}>
           <div className="flex items-center gap-3">
             <input

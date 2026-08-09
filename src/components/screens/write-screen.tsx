@@ -14,7 +14,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { generateSkeleton, requestExpand } from "@/lib/api/skeleton";
 import { presetExpand, presetSkeleton } from "@/lib/zhizhi/skeleton-fallback";
 import { useZhizhi } from "@/lib/zhizhi/store";
-import { aiRatio, countWords, type Fragment } from "@/lib/zhizhi/types";
+import { aiRatio, countWords, identityToPromptContext, type Fragment } from "@/lib/zhizhi/types";
 
 export function WriteScreen({ draftId }: { draftId: string }) {
   const { t } = useTranslation();
@@ -24,6 +24,7 @@ export function WriteScreen({ draftId }: { draftId: string }) {
     getDraft,
     fragmentsForGap,
     guardrails,
+    identity,
     setDraftContent,
     setDraftSkeleton,
     citeFragment,
@@ -61,6 +62,7 @@ export function WriteScreen({ draftId }: { draftId: string }) {
       const skeleton = await generateSkeleton({
         gapTitle: draft.title,
         fragments: fragments.map((f) => f.content),
+        identity: identityToPromptContext(identity),
       });
       setDraftSkeleton(draft.id, skeleton);
     } catch {

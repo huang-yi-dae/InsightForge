@@ -13,20 +13,26 @@ const SYSTEM_PROMPT = `你是「织知」的写作骨架助手。你的唯一职
 interface SkeletonBody {
   gapTitle?: string;
   fragments?: string[];
+  identity?: string;
 }
 
 export async function POST(request: NextRequest) {
   const body = (await request.json().catch(() => ({}))) as SkeletonBody;
   const gapTitle = typeof body.gapTitle === "string" ? body.gapTitle : "";
   const fragments = Array.isArray(body.fragments) ? body.fragments.slice(0, 8) : [];
+  const identity = typeof body.identity === "string" ? body.identity.slice(0, 800).trim() : "";
 
   if (!gapTitle) {
     return Response.json({ error: "missing gapTitle" }, { status: 400 });
   }
 
+  const identityBlock = identity
+    ? `\n\n创作者身份档案（用于让提纲的取向、切入点更贴合作者，但仍只出提纲、不得代写）：\n${identity}`
+    : "";
+
   const userPrompt = `写作主题（一个「空白」）：${gapTitle}
 相关碎片素材：
-${fragments.map((f, i) => `${i + 1}. ${f}`).join("\n")}
+${fragments.map((f, i) => `${i + 1}. ${f}`).join("\n")}${identityBlock}
 
 请给出这篇文章的提纲骨架（只出提纲要点，不要成段文字）。`;
 
