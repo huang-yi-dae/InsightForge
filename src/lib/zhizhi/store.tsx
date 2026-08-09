@@ -63,20 +63,33 @@ function loadPersist(): PersistShape | null {
 }
 
 export function ZhizhiProvider({ children }: { children: React.ReactNode }) {
-  // 懒初始化：在浏览器端直接从 localStorage 读取，避免在 effect 里 setState 造成级联渲染。
-  const persisted = useRef<PersistShape | null>(loadPersist());
-  const [ready, setReady] = useState(false);
-  const [fragments, setFragments] = useState<Fragment[]>(persisted.current?.fragments?.length ? persisted.current.fragments : MOCK_FRAGMENTS);
-  const [gaps, setGaps] = useState<Gap[]>(persisted.current?.gaps?.length ? persisted.current.gaps : MOCK_GAPS);
-  const [drafts, setDrafts] = useState<Draft[]>(persisted.current?.drafts?.length ? persisted.current.drafts : MOCK_DRAFTS);
-  const [writings, setWritings] = useState<Writing[]>(persisted.current?.writings?.length ? persisted.current.writings : MOCK_WRITINGS);
-  const [guardrails, setGuardrailsState] = useState<Guardrails>({ ...DEFAULT_GUARDRAILS, ...persisted.current?.guardrails });
+  // 懒初始化：仅执行一次。在浏览器端直接从 localStorage 读取，
+  // 避免在 effect 里 setState 造成级联渲染，也避免在渲染期访问 ref。
+  const [fragments, setFragments] = useState<Fragment[]>(() => {
+    const p = loadPersist();
+    return p?.fragments?.length ? p.fragments : MOCK_FRAGMENTS;
+  });
+  const [gaps, setGaps] = useState<Gap[]>(() => {
+    const p = loadPersist();
+    return p?.gaps?.length ? p.gaps : MOCK_GAPS;
+  });
+  const [drafts, setDrafts] = useState<Draft[]>(() => {
+    const p = loadPersist();
+    return p?.drafts?.length ? p.drafts : MOCK_DRAFTS;
+  });
+  const [writings, setWritings] = useState<Writing[]>(() => {
+    const p = loadPersist();
+    return p?.writings?.length ? p.writings : MOCK_WRITINGS;
+  });
+  const [guardrails, setGuardrailsState] = useState<Guardrails>(() => ({
+    ...DEFAULT_GUARDRAILS,
+    ...loadPersist()?.guardrails,
+  }));
+  const [ready] = useState<boolean>(() => typeof window !== "undefined");
   const clusters = MOCK_CLUSTERS;
   const hydrated = useRef(false);
 
   useEffect(() => {
-    // 客户端挂载后再标记 ready，避免 SSR/CSR 内容不一致。
-    setReady(true);
     hydrated.current = true;
   }, []);
 
