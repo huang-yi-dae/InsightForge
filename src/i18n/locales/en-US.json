@@ -1,0 +1,131 @@
+{
+  "common": {
+    "signIn": "Sign in",
+    "signOut": "Sign out",
+    "loading": "Loading…",
+    "on": "On",
+    "off": "Off",
+    "close": "Close",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "userId": "User ID",
+    "back": "Back"
+  },
+  "language": {
+    "label": "Language",
+    "triggerLabel": "Language: {{language}}",
+    "followSystem": "System",
+    "followSystemWithLanguage": "System ({{language}})",
+    "enUS": "English",
+    "zhCN": "中文"
+  },
+  "errors": {
+    "notFound": {
+      "code": "404",
+      "title": "Page not found",
+      "description": "The page you're looking for doesn't exist or may have been moved.",
+      "backHome": "Back to home"
+    },
+    "generic": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. You can try again or return to the home page.",
+      "tryAgain": "Try again",
+      "backHome": "Back to home"
+    }
+  },
+  "brand": {
+    "name": "InsightForge",
+    "cn": "织知",
+    "tagline": "AI only gives the skeleton. You add the flesh."
+  },
+  "nav": {
+    "dashboard": "Today",
+    "gaps": "Gaps",
+    "write": "Write",
+    "library": "Library",
+    "settings": "Settings"
+  },
+  "quota": {
+    "label": "AI share",
+    "over": "AI share over limit",
+    "ok": "Within limit"
+  },
+  "dashboard": {
+    "title": "Today",
+    "subtitle": "Collecting is not growing. Turn one gap into a piece today.",
+    "inflow": "Today's inflow",
+    "pendingGaps": "Pending gaps",
+    "drafting": "Drafts in progress",
+    "fragments": "fragments",
+    "recommend": "Write this first",
+    "relatedClusters": "related clusters",
+    "supporting": "supporting fragments",
+    "openGap": "Explore gaps",
+    "resume": "Resume draft",
+    "inflowWarn": "Daily inflow near limit — write one before collecting more."
+  },
+  "gaps": {
+    "title": "Gap discovery",
+    "subtitle": "Where concepts are ready but you haven't written yet.",
+    "recon": "Re-scan",
+    "leftTitle": "Fragment field",
+    "listTitle": "Gaps to write",
+    "detailTitle": "Detail",
+    "confidence": "confidence",
+    "supporting": "supporting fragments",
+    "adjacentConcepts": "Adjacent concepts",
+    "fragmentPreview": "Fragment preview",
+    "generateSkeleton": "Generate skeleton →",
+    "resume": "Resume draft →",
+    "empty": "No gaps yet — go feed some fragments first.",
+    "pickHint": "Pick a gap to see its supporting fragments.",
+    "fragmentUnit": "frags"
+  },
+  "write": {
+    "back": "Back",
+    "draft": "Draft",
+    "skeletonTitle": "Skeleton",
+    "skeletonBadge": "This is a prompt, not you",
+    "generating": "Generating skeleton…",
+    "generate": "Generate skeleton",
+    "requestExpand": "Request expansion",
+    "expandLeft": "{{left}} of {{total}} left",
+    "expandNote": "Expansion returns bullet hints only — never full paragraphs, and you cannot insert them as text.",
+    "canvasTitle": "Your canvas",
+    "canvasPlaceholder": "Write here. AI does not come in. Every word here is yours.",
+    "yourWords": "Your words",
+    "aiWords": "AI words",
+    "sourceTitle": "Fragments",
+    "insertQuote": "Insert as source",
+    "inserted": "Inserted",
+    "reflowBar": "Reflow bar",
+    "saveDraft": "Save draft",
+    "saved": "Saved",
+    "publish": "Publish & reflow →",
+    "published": "Published & reflowed",
+    "overWarn": "AI share {{ratio}}% is over your {{limit}}% limit — the flesh should be yours.",
+    "expandDisabled": "Expansion limit reached for this piece.",
+    "genFailed": "Skeleton service is busy — loaded a preset outline instead."
+  },
+  "library": {
+    "title": "Writings",
+    "subtitle": "Published pieces flow back into your knowledge base.",
+    "reflowed": "Reflowed",
+    "empty": "No published pieces yet. Finish a draft to see it here.",
+    "humanShare": "human {{ratio}}%",
+    "words": "{{count}} words"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Anti-ghostwriting guardrails.",
+    "aiRatio": "AI word-share limit",
+    "aiRatioDesc": "Warn when AI words exceed this share of a piece.",
+    "expandLimit": "Expansion uses per piece",
+    "expandLimitDesc": "How many times you can request an outline expansion.",
+    "dailyInflow": "Daily fragment inflow limit",
+    "dailyInflowDesc": "Guard against the collecting habit.",
+    "saved": "Settings saved"
+  }
+}
