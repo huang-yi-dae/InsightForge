@@ -49,9 +49,27 @@
 }
 
 body {
-  font-family: "Inter", "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-sans), "Inter", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   /* Kill the ~300ms synthetic click delay on touch devices. */
   touch-action: manipulation;
+}
+
+/* 织知 · 文脉双联 · 网格排印 —— engineering-grid underlay + paper ground */
+.zz-grid-underlay {
+  background-image:
+    linear-gradient(var(--zz-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--zz-grid-line) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+.zz-paper {
+  background-color: var(--background);
+  background-image:
+    linear-gradient(var(--zz-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--zz-grid-line) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.zz-serif {
+  font-family: "Noto Serif SC", "Iowan Old Style", "Palatino Linotype", "STSong", serif;
 }
 
 /* Prevent iOS WKWebView focus auto-zoom on form controls below the sm breakpoint.
